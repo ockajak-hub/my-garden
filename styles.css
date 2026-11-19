@@ -1,0 +1,489 @@
+/* ============================================================
+   styles.css — all UI styling for the garden app
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: #f5f8fa;
+  color: #333;
+  line-height: 1.5;
+}
+
+a {
+  color: #42a5f5;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.btn {
+  border: 1px solid #ccc;
+  background: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn:hover:not(:disabled) {
+  background: #f0f0f0;
+  border-color: #999;
+}
+.btn.primary {
+  background: #42a5f5;
+  color: white;
+  border-color: #1565c0;
+}
+.btn.primary:hover:not(:disabled) {
+  background: #1565c0;
+}
+.btn.danger {
+  border-color: #e53935;
+  color: #e53935;
+}
+.btn.danger:hover:not(:disabled) {
+  background: #ffebee;
+}
+
+/* ======================= TOPBAR ======================= */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.brand {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+.stats {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #e3f2fd;
+  font-size: 13px;
+}
+.chip.due {
+  background: #ffd54f;
+  color: #444;
+}
+
+/* ======================= TABS ======================= */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  background: white;
+}
+.tab-btn {
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+.tab-btn.active {
+  color: #42a5f5;
+  border-bottom: 3px solid #42a5f5;
+}
+
+/* ======================= MAIN ======================= */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.tab {
+  display: none;
+}
+.tab.active {
+  display: block;
+}
+
+/* ======================= GARDEN ======================= */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+.map {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border: 2px solid #999;
+  background: #dfe6e9;
+  overflow: hidden;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+/* with a background photo: the box follows the image's exact proportions */
+.map.fit {
+  height: auto;
+}
+.map.grid::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(to right, #ccc 1px, transparent 1px),
+    linear-gradient(to bottom, #ccc 1px, transparent 1px);
+  background-size: 25px 25px;
+  pointer-events: none;
+  z-index: 0;
+}
+.bgimg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#trees-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+}
+.tree {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.7);
+  border-color: #999;
+  transition: 0.2s;
+  user-select: none;
+}
+.tree:hover {
+  background: white;
+}
+.tree.due {
+  animation: pulse 1.8s infinite;
+  box-shadow: 0 0 0 2px #ff5722;
+  z-index: 10;
+}
+.sprite {
+  font-size: 24px;
+}
+.ico {
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.18em;
+  display: inline-block;
+}
+.tname {
+  font-size: 13px;
+  text-align: center;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tree.dragging {
+  opacity: 0.8;
+  z-index: 20;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(255, 87, 34, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); }
+}
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* ======================= BADGES ======================= */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+.badge {
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+.badge.on {
+  background: #e8f5e9;
+  border: 1px solid #81c784;
+}
+.badge.off {
+  opacity: 0.6;
+}
+.badge span:first-child {
+  font-size: 2em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* ======================= TASKS ======================= */
+.task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.t-emoji {
+  font-size: 20px;
+}
+.t-name {
+  flex-grow: 1;
+}
+
+/* ======================= HISTORY ====================== */
+.sum-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.sum {
+  text-align: center;
+  padding: 15px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.sum > b {
+  display: block;
+  font-size: 1.8em;
+  margin-bottom: 4px;
+}
+
+.h-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+.h-row span:first-child {
+  font-size: 1.2em;
+  margin-right: 10px;
+}
+.over {
+  color: #ff5722;
+}
+
+/* ======================= MODAL ======================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-card {
+  width: min(90vw, 500px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.modal-icon {
+  font-size: 2em;
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+.spacer {
+  flex-grow: 1;
+}
+
+/* ======================= FORM ELEMENTS ======================= */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+label {
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.emoji-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.emoji {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #ddd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+}
+.emoji.on {
+  border: 2px solid #42a5f5;
+  background: #e3f2fd;
+}
+
+.months {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+.month {
+  padding: 8px 8px;
+  border-radius: 4px;
+  background: white;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #ddd;
+}
+.month.on {
+  background: #42a5f5;
+  color: white;
+}
+.row {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dim {
+  color: #666;
+  font-size: 0.9em;
+}
+.sub {
+  margin: 8px 0 15px;
+  color: #666;
+}
+.link {
+  color: inherit;
+  text-decoration: underline;
+}
+.alert {
+  background: #ffd54f !important;
+  color: #444 !important;
+}
+
+/* ======================= BADGE ANIMATION ======================= */
+.confetti-bit {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  animation: confetti-fall 1.3s forwards linear;
+}
+@keyframes confetti-fall {
+  to { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+}
+
+/* ======================= TOASTS ======================= */
+#toasts {
+  position: fixed;
+  top: 80px;
+  right: 10px;
+  z-index: 9999;
+}
+.toast {
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: 0.3s;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast.badge {
+  border-left: 4px solid #4caf50;
+}
+.toast.error {
+  border-left: 4px solid #f44336;
+}
+
+/* ======================= RESPONSIVE ======================= */
+@media (max-width: 768px) {
+  main {
+    padding: 10px;
+  }
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+  .tabs {
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    flex-grow: 1;
+    text-align: center;
+  }
+  .toolbar {
+    justify-content: center;
+  }
+  .map {
+    height: 300px;
+  }
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Garden 🪴</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪴</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">🪴 <b>My&nbsp;Garden</b></div>
+  <div class="stats">
+    <span class="chip" title="Total points">💎 <b id="stat-points">0</b></span>
+    <span class="chip" title="Care streak">🔥 <b id="stat-streak">0</b> <i>day streak</i></span>
+    <span class="chip" title="Trees planted">🌳 <b id="stat-trees">0</b></span>
+    <span class="chip due" id="chip-due" title="Tasks due">📋 <b id="stat-due">0</b></span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="garden">🗺️ Garden</button>
+  <button class="tab-btn" data-tab="tasks">📋 Tasks</button>
+  <button class="tab-btn" data-tab="history">🕰️ History</button>
+  <button class="tab-btn" data-tab="badges">🏆 Badges</button>
+  <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
+</nav>
+
+<main>
+  <!-- ======================= GARDEN ======================= -->
+  <section id="tab-garden" class="tab active">
+    <div class="toolbar">
+      <button id="btn-plant" class="btn primary">🌱 Plant a tree</button>
+      <label class="grid-toggle"><input type="checkbox" id="grid-chk"> ground grid</label>
+      <span class="hint">TAP a tree to edit · DRAG to move</span>
+    </div>
+    <div id="due-banner"></div>
+    <div class="map" id="map">
+      <img class="bgimg" id="map-bg" alt="" hidden>
+      <div id="trees-layer"></div>
+    </div>
+    <p class="empty" id="garden-empty">Your garden plot is empty. Plant your first tree to start your care streak! 🌱</p>
+  </section>
+
+  <!-- ======================= TASKS ======================= -->
+  <section id="tab-tasks" class="tab">
+    <div id="tasks-list"></div>
+  </section>
+
+  <!-- ======================= HISTORY ======================= -->
+  <section id="tab-history" class="tab">
+    <div id="history-list"></div>
+  </section>
+
+  <!-- ======================= BADGES ======================= -->
+  <section id="tab-badges" class="tab">
+    <p class="sub" id="badge-progress"></p>
+    <div class="badge-grid" id="badge-grid"></div>
+  </section>
+
+  <!-- ======================= SETTINGS ======================= -->
+  <section id="tab-settings" class="tab settings">
+    <h3>Map</h3>
+    <div class="row">
+      <button class="btn" id="btn-bg-upload">🖼️ Choose background photo…</button>
+      <button class="btn" id="btn-bg-remove">Remove background</button>
+    </div>
+    <p class="dim">Use a photo or aerial map of your garden as background, then place your trees straight onto it.</p>
+    <h3>Data</h3>
+    <div class="row">
+      <button class="btn" id="btn-export">⬇️ Export backup (JSON)</button>
+      <button class="btn" id="btn-import">⬆️ Import backup</button>
+      <button class="btn danger" id="btn-reset">🗑️ Reset garden</button>
+    </div>
+    <p class="dim">Everything is stored locally in your browser. Use “Export” every now and then to keep a backup.</p>
+  </section>
+</main>
+
+<!-- ======================= TREE MODAL ======================= -->
+<div class="modal" id="tree-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <span class="modal-icon" id="tm-emoji">🌱</span>
+      <div>
+        <h3 id="tm-title">New tree</h3>
+        <p class="dim" id="tm-sub">Add a tree to your garden</p>
+      </div>
+      <button class="x" id="tm-close" aria-label="Close">×</button>
+    </div>
+
+    <label>Name</label>
+    <input type="text" id="tm-name" placeholder="e.g. Old apple by the fence" maxlength="40">
+
+    <label>Species</label>
+    <div class="emoji-row" id="tm-species"></div>
+
+    <div class="grid2">
+      <label>Planted on</label>
+      <input type="date" id="tm-planted">
+      <label>Water every</label>
+      <select id="tm-water">
+        <option value="2">2 days</option>
+        <option value="3">3 days</option>
+        <option value="5">5 days</option>
+        <option value="7" selected>1 week</option>
+        <option value="10">10 days</option>
+        <option value="14">2 weeks</option>
+        <option value="21">3 weeks</option>
+        <option value="30">1 month</option>
+      </select>
+    </div>
+
+    <label>Prune in which months?</label>
+    <div class="months" id="tm-months"></div>
+
+    <label>Chemical treatment — in which months?</label>
+    <div class="months" id="tm-treat-months"></div>
+    <label>Treatment product / dose</label>
+    <input type="text" id="tm-treat-product" placeholder="e.g. copper, 2 ml/l" maxlength="60">
+
+    <label>Notes</label>
+    <textarea id="tm-notes" rows="2" placeholder="Variety, quirks, reminders…"></textarea>
+
+    <div class="care-now" id="tm-care-now" hidden>
+      <button class="btn" id="tm-water-btn">💧 Just watered</button>
+      <button class="btn" id="tm-prune-btn">✂️ Just pruned</button>
+      <button class="btn" id="tm-treat-btn">🧪 Just treated</button>
+    </div>
+
+    <div class="next" id="tm-next"></div>
+    <div id="tm-history"></div>
+
+    <div class="modal-actions">
+      <button class="btn danger" id="tm-delete" hidden>Delete tree</button>
+      <span class="spacer"></span>
+      <button class="btn" id="tm-cancel">Cancel</button>
+      <button class="btn primary" id="tm-save">Plant 🌱</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="bg-file" accept="image/*" hidden>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<div id="toasts"></div>
+<div id="confetti"></div>
+
+<script src="store.js"></script>
+<script src="game.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
