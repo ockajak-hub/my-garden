@@ -269,7 +269,7 @@ main {
   flex-grow: 1;
 }
 
-/* ======================= HISTORY ====================== */
+/* ======================= HISTORY ======================= */
 .sum-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

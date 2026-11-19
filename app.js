@@ -422,7 +422,7 @@ function saveTree(){
     return;
   }
   const planted = $('#tm-planted').value;
-  const water = Number($(tm-water').value);
+  const water = Number($('#tm-water').value);
   const treatProduct = $('#tm-treat-product').value.trim();
   const notes = $('#tm-notes').value;
 
